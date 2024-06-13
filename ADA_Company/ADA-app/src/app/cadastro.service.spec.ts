@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { GlobalService } from './global.service';
+import { CadastroService } from './cadastro.service';
 
-describe('GlobalService', () => {
-  let service: GlobalService;
+describe('CadastroService', () => {
+  let service: CadastroService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(GlobalService);
+    service = TestBed.inject(CadastroService);
   });
 
   it('should be created', () => {

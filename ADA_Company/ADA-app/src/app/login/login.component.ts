@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CadastroService } from '../cadastro.service';
 
 @Component({
   selector: 'app-login',
@@ -17,13 +18,22 @@ export class LoginComponent implements OnInit {
   mensagem = '';
   
   
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {}
+  constructor(
+    private fb: FormBuilder, 
+    private authService: AuthService,
+    private cadastroService: CadastroService, 
+    private router: Router
+
+  ) {}
   
   ngOnInit(): void {
 
   }
   
   login(): void {
+
+    // Verificar se as credenciais existem no serviço de cadastro
+    const credenciaisCadastradas = this.cadastroService.getCredenciais().find(c => c.email === this.email && c.senha === this.senha);
     if(this.authService.login(this.email, this.senha)){
         this.router.navigate(['/meuacesso']);
         

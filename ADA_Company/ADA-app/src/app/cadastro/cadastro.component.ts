@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { CadastroService } from '../cadastro.service';
+
 
 @Component({
   selector: 'app-cadastro',
@@ -13,7 +15,14 @@ import { Router, RouterModule } from '@angular/router';
 export class CadastroComponent {
   cadastroForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+
+  constructor(
+    private fb: FormBuilder, 
+    private router: Router,
+    private cadastroService: CadastroService
+  ) {
+
+
     this.cadastroForm = this.fb.group({
       nome: ['', Validators.required],
       sobrenome: ['', Validators.required],
@@ -25,11 +34,12 @@ export class CadastroComponent {
 
   onSubmit() {
     if (this.cadastroForm.valid) {
-      // Lógica para salvar os dados pode ser adicionada aqui
-      // Exemplo: enviar os dados para um serviço de API
+      // Salvar as credenciais usando o serviço de cadastro
+      const { email, senha } = this.cadastroForm.value;
+      this.cadastroService.salvarCredenciais(email, senha);
 
       // Após salvar, redirecionar para a página de perfil
-      this.router.navigate(['/meuacesso']);
+      this.router.navigate(['/login']);
     } else {
       // Exibir mensagens de erro ou marcar os campos inválidos
       this.cadastroForm.markAllAsTouched();

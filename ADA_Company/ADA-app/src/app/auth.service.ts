@@ -1,27 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { CadastroService } from './cadastro.service'; // Importe o serviço de cadastro
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private usuarioAutenticado: boolean = false;
-  private acessos = [
-    {
-      email: 'teste01@gmail.com',
-      senha: 'senha1'
-    },
-    {
-      email: 'teste02@gmail.com',
-      senha: 'senha2'
-    },
-    {
-      email: 'teste03@gmail.com',
-      senha: 'senha3'
-    },
-  ];
 
-  constructor() {
+  constructor(
+    private router: Router,
+    private cadastroService: CadastroService // Injete o serviço de cadastro
+
+  ) {
     if(this.isBrowser()){
       const storedAuth = sessionStorage.getItem('usuarioAutenticado');
       this.usuarioAutenticado = storedAuth === 'true';
@@ -29,23 +21,23 @@ export class AuthService {
   }
 
   login(email: string, senha: string): boolean {
-    this.acessos.forEach(acesso => { 
-      if(acesso.email == email && acesso.senha == senha){
-        this.usuarioAutenticado = true;
-        sessionStorage.setItem('usuarioAutenticado', 'true');
-        sessionStorage.setItem('usuarioAutenticado', 'true');
-      }
-    });
-    if(!this.usuarioAutenticado){
+    const credenciaisCadastradas = this.cadastroService.getCredenciais().find(c => c.email === email && c.senha === senha);
+
+    if (credenciaisCadastradas) {
+      this.usuarioAutenticado = true;
+      sessionStorage.setItem('usuarioAutenticado', 'true');
+      return true;
+    } else {
       this.usuarioAutenticado = false;
       sessionStorage.setItem('usuarioAutenticado', 'false');
-      }
-    return this.usuarioAutenticado;
+      return false;
+    }
   }
 
-  logout(): void{
+  logout(): void {
     this.usuarioAutenticado = false;
     sessionStorage.removeItem('usuarioAutenticado');
+    this.router.navigate(['/login']); // Redireciona para a página de login após logout
   }
 
   isLoggedIn(): boolean {
@@ -56,4 +48,3 @@ export class AuthService {
     return typeof window !== 'undefined' && typeof sessionStorage !== 'undefined';
   }
 }
-
