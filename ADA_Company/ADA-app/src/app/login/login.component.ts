@@ -34,19 +34,20 @@ export class LoginComponent implements OnInit {
 
     // Verificar se as credenciais existem no serviço de cadastro
     const credenciaisCadastradas = this.cadastroService.getCredenciais().find(c => c.email === this.email && c.senha === this.senha);
-    if(this.authService.login(this.email, this.senha)){
+    if(this.authService.login(this.email, this.senha)){ 
         this.router.navigate(['/meuacesso']);
-        
-     
+        sessionStorage.setItem('reloaded', 'false');
     } else {
       // Mensagem de erro
       this.mensagem = "Credenciais inválidas. Tente novamente!";
     }
+
   }
 
   preventDefault(event: Event) {
     event.preventDefault();
   }
+
 }
 
  

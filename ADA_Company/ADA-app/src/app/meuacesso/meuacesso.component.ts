@@ -32,13 +32,38 @@ export class OrderService {
 export class MeuacessoComponent implements OnInit{
   orders: any[] = [];
   
-  constructor(private router: Router, private orderService: OrderService) { }
-  
+  constructor(private router: Router, private orderService: OrderService) {}
+
   ngOnInit(): void {
-    if(!sessionStorage.getItem('usuarioAutenticado')){
+    if (!this.isBrowser()) {
+      return;
+    }
+
+    if (!sessionStorage.getItem('usuarioAutenticado')) {
       this.router.navigate(['/login']);
     }
+
     // Recuperar os pedidos do usuário ao inicializar o componente
     this.orders = this.orderService.getOrders('userId');
+
+    this.checkAndReload();
+  }
+
+  isBrowser(): boolean {
+    return typeof window !== 'undefined';
+  }
+
+  checkAndReload(): void {
+    if (!this.isBrowser()) {
+      return;
+    }
+
+    const reloaded = sessionStorage.getItem('reloaded');
+    if (reloaded === 'false') {
+      // Atualizando a flag para evitar recarregar novamente
+      sessionStorage.setItem('reloaded', 'true');
+      // Recarregando a página
+      location.reload();
+    }
   }
 }
